@@ -9,6 +9,10 @@ filter_remote_branches() {
 
 status=0
 
+quit() {
+    exit "$status"
+}
+
 err() {
     format="$1"
     shift
@@ -18,7 +22,7 @@ err() {
 
 if ! current="$(git symbolic-ref --short HEAD)"; then
     err "can't find current branch"
-    exit
+    quit
 fi
 
 for b in $(git branch -a | filter_remote_branches); do
@@ -26,4 +30,4 @@ for b in $(git branch -a | filter_remote_branches); do
 done
 
 git checkout "$current" || err "can't return to %s" "$current"
-exit "$status"
+quit
