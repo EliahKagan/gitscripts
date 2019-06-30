@@ -6,6 +6,10 @@ set -f
 checkout='git checkout'
 pull='git pull'
 
+filter_remote_branches() {
+    grep -oxP '\s*remotes/origin/\K\S+'
+}
+
 status=0
 
 err() {
@@ -20,7 +24,7 @@ if ! current="$(git symbolic-ref --short HEAD)"; then
     exit
 fi
 
-for b in $(git branch -a | grep -oxP '\s*remotes/origin/\K\S+'); do
+for b in $(git branch -a | filter_remote_branches); do
     { $checkout "$b" && $pull; } || err "can't update %s" "$b"
 done
 
