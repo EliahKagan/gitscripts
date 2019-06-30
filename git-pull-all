@@ -8,10 +8,7 @@ filter_remote_branches() {
 }
 
 status=0
-
-quit() {
-    exit "$status"
-}
+quit() { exit "$status"; }
 
 err() {
     format="$1"
