@@ -1,0 +1,28 @@
+#!/bin/sh
+# git-pull-all - check out and pull from all remote branches
+
+set -f
+
+checkout='echo git checkout'
+pull='echo git pull'
+
+status=0
+
+err() {
+    format="$1"
+    shift
+    print "%s: $format\\n" "$0" "$@"
+    status=1
+}
+
+if ! current="$(git symbolic-ref --short HEAD)"; then
+    err "can't find current branch"
+    exit
+fi
+
+for b in $(git branch -a | grep -oxP '\s*remotes/origin/\K\S+'); do
+    { $checkout "$b" && $pull; } || err "can't update %s" "$b"
+done
+
+$checkout "$current" || err "can't return to %s" "$current"
+exit "$status"
