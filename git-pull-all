@@ -3,11 +3,11 @@
 
 set -f
 
-checkout='git checkout'
-pull='git pull'
+checkout='echo git checkout'
+pull='echo git pull'
 
 filter_remote_branches() {
-    grep -oxP '\s*remotes/origin/\K\S+'
+    sed -nE 's|^[[:space:]]*remotes/origin/([^[:space:]]+)$|\1|p'
 }
 
 status=0
