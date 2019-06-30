@@ -3,9 +3,6 @@
 
 set -f
 
-checkout='git checkout'
-pull='git pull'
-
 filter_remote_branches() {
     sed -nE 's|^[[:space:]]*remotes/origin/([^[:space:]]+)$|\1|p'
 }
@@ -25,8 +22,8 @@ if ! current="$(git symbolic-ref --short HEAD)"; then
 fi
 
 for b in $(git branch -a | filter_remote_branches); do
-    { $checkout "$b" && $pull; } || err "can't update %s" "$b"
+    { git checkout "$b" && git pull; } || err "can't update %s" "$b"
 done
 
-$checkout "$current" || err "can't return to %s" "$current"
+git checkout "$current" || err "can't return to %s" "$current"
 exit "$status"
