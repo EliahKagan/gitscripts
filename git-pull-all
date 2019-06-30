@@ -11,7 +11,7 @@ status=0
 err() {
     format="$1"
     shift
-    print "%s: $format\\n" "$0" "$@"
+    printf "%s: $format\\n" "$0" "$@"
     status=1
 }
 
