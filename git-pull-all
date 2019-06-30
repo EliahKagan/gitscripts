@@ -3,8 +3,8 @@
 
 set -f
 
-checkout='echo git checkout'
-pull='echo git pull'
+checkout='git checkout'
+pull='git pull'
 
 status=0
 
