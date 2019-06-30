@@ -3,8 +3,8 @@
 
 set -f
 
-checkout='echo git checkout'
-pull='echo git pull'
+checkout='git checkout'
+pull='git pull'
 
 filter_remote_branches() {
     sed -nE 's|^[[:space:]]*remotes/origin/([^[:space:]]+)$|\1|p'
