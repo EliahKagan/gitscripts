@@ -1,0 +1,6 @@
+#!/bin/sh
+
+for f in check git-*; do
+    printf 'Checking %s.\n' "$f"
+    shellcheck "$f"
+done
