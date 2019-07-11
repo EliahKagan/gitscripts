@@ -17,10 +17,9 @@ err() {
     status=1
 }
 
-if ! current="$(git symbolic-ref --short HEAD)"; then
-    err "can't find current branch"
-    quit
-fi
+die() { err "$@"; quit; }
+current="$(git symbolic-ref --short HEAD)" || die "can't find courrent branch"
+git fetch --all || die "can't fetch to get a complete list of branches"
 
 for b in $(git branch -a | filter_remote_branches); do
     { git checkout "$b" && git pull; } || err "can't update %s" "$b"
