@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for f in check git-*; do
+for f in check deploy git-*; do
     printf 'Checking %s.\n' "$f"
     shellcheck "$f"
 done
