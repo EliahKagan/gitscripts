@@ -15,12 +15,18 @@
 
 set -efo pipefail
 
+# See inode(7), "The file type and mode"
+declare -ri S_IFMT=8#170000 S_IFLNK=8#120000
+
 readonly miss='missing in "git ls-files -s" output'
 
 if [ -t 1 ]; then
-    readonly exec_color=$'\e[01;32m' merge_color=$'\e[01;31m' no_color=$'\e[0m'
+    readonly symlink_color=$'\e[01;36m'
+    readonly exec_color=$'\e[01;32m'
+    readonly merge_color=$'\e[01;31m'
+    readonly no_color=$'\e[0m'
 else
-    readonly exec_color='' merge_color='' no_color=''
+    readonly symlink_color='' exec_color='' merge_color='' no_color=''
 fi
 
 declare -i bits low_bits
@@ -28,12 +34,13 @@ declare -i bits low_bits
 git ls-files -sz -- "$@" | while read -rd '' mode hash num path; do
     : "${mode:?$miss}" "${hash:?$miss}" "${num:?$miss}" "${path:?$miss}"
     bits="8#$mode"
-    
-    # If any executable bit is set, color the name and give it a trailing star.
-    if ((bits & 8#111)); then
-        pre="$exec_color" post="$no_color*"
+
+    if (((bits & S_IFMT) == S_IFLNK)); then # symbolic link
+        before="$symlink_color" after="${no_color}@"
+    elif ((bits & 8#111)); then # at least one executable bit set
+        before="$exec_color" after="${no_color}*"
     else
-        pre='' post=''
+        before='' after=''
     fi
 
     # If this entry is a candidate in a merge conflict, make that clear.
@@ -44,5 +51,5 @@ git ls-files -sz -- "$@" | while read -rd '' mode hash num path; do
     fi
 
     low_bits="$((bits % 8#10000))"
-    printf '%04o  %s%s%s%s\n' "$low_bits" "$pre" "$path" "$post" "$merge"
+    printf '%04o  %s%s%s%s\n' "$low_bits" "$before" "$path" "$after" "$merge"
 done
