@@ -18,7 +18,7 @@ set -efo pipefail
 # See inode(7), "The file type and mode"
 declare -ri S_IFMT=8#170000 S_IFLNK=8#120000
 
-readonly miss='missing in "git ls-files -s" output'
+readonly missing='missing in "git ls-files -s" output'
 
 if [ -t 1 ]; then
     readonly symlink_color=$'\e[01;36m' # bright cyan
@@ -32,9 +32,12 @@ fi
 declare -i bits low_bits
 
 git ls-files -sz -- "$@" | while read -rd '' mode hash num path; do
-    : "${mode:?$miss}" "${hash:?$miss}" "${num:?$miss}" "${path:?$miss}"
-    bits="8#$mode"
+    : "${mode:?$missing}"
+    : "${hash:?$missing}"
+    : "${num:?$missing}"
+    : "${path:?$missing}"
 
+    bits="8#$mode"
     if (((bits & S_IFMT) == S_IFLNK)); then # symbolic link
         before="$symlink_color" after="${no_color}@"
     elif ((bits & 8#111)); then # at least one executable bit set
@@ -43,8 +46,7 @@ git ls-files -sz -- "$@" | while read -rd '' mode hash num path; do
         before='' after=''
     fi
 
-    # If this entry is a candidate in a merge conflict, make that clear.
-    if ((num > 0)); then
+    if ((num > 0)); then # Make clear this is a candidate in a merge conflcit.
         merge="  $merge_color(MERGING #$num)$no_color"
     else
         merge=''
