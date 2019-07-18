@@ -21,10 +21,10 @@ declare -ri S_IFMT=8#170000 S_IFLNK=8#120000
 readonly miss='missing in "git ls-files -s" output'
 
 if [ -t 1 ]; then
-    readonly symlink_color=$'\e[01;36m'
-    readonly exec_color=$'\e[01;32m'
-    readonly merge_color=$'\e[01;31m'
-    readonly no_color=$'\e[0m'
+    readonly symlink_color=$'\e[01;36m' # bright cyan
+    readonly exec_color=$'\e[01;32m'    # bright green
+    readonly merge_color=$'\e[01;31m'   # bright red
+    readonly no_color=$'\e[0m'          # white
 else
     readonly symlink_color='' exec_color='' merge_color='' no_color=''
 fi
