@@ -1,4 +1,4 @@
-# gitscripts - *some custom git commands*
+# gitscripts - some custom git commands
 
 *Written in 2019 by Eliah Kagan \<degeneracypressure@gmail.com\>.*
 
