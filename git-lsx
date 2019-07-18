@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # git-lsx - Lists files in the index, emphasizing those marked executable.
 #
 # This file is part of gitscripts, some custom git commands.
@@ -13,9 +13,27 @@
 # with this software. If not, see
 # <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-set -f
+set -efo pipefail
 
-git ls-files -sz -- "$@" | perl -pwe '
-    BEGIN { $/ = "\0" }
-    # rest of the Perl script
-'
+readonly missing='missing in "git s-files -s" output'
+
+if [ -t 1 ]; then
+    readonly start_color=$'\e[01;32m' stop_color=$'\e[0m'
+else
+    readonly start_color= stop_color=
+fi
+
+declare -i bits
+
+git ls-files -sz -- "$@" | while read -rd '' mode hash num path; do
+    : "${mode:?$missing}" "${path:?$missing}"
+    bits="8#$mode"
+    
+    if ((bits & 8#111)); then
+        before="$start_color" after="$stop_color*"
+    else
+        before= after=
+    fi
+
+    printf '%04o  %s%s%s\n' "$((bits % 8#10000))" "$before" "$path" "$after"
+done
