@@ -1,6 +1,5 @@
 #!/bin/sh
-#
-# git-pull-all - check out and pull from all remote branches
+# git-pull-all - Checks out and pulls from all  branches of the origin remote.
 #
 # This file is part of gitscripts, some custom git commands.
 #
