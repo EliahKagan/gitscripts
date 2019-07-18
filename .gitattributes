@@ -1,4 +1,4 @@
-# .gitattributes - The non-Markdown files are shells script needing LF endings.
+# .gitattributes - The non-Markdown files are shell scripts needing LF endings.
 #
 # This file is part of gitscripts, some custom git commands.
 #
