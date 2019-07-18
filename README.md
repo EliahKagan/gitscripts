@@ -22,8 +22,9 @@ Here's a summary of the commands:
 
 ### `git-lsx`
 
-This command lists files in the Git index, emphasizing those marked executable
-in a manner similar to the effect of `ls --color=auto -F`.
+This command lists files in the Git index with their associated permissions,
+emphasizing those marked executable (and, in a different style, symlinks) in a
+manner similar to the effect of `ls --color=auto -F`.
 
 This is mostly useful on Windows (with Git for Windows). On a Unix-like system,
 your repositories are presumably on a filesystem that supports Unix-style

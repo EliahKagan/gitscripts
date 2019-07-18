@@ -14,6 +14,14 @@ this software. If not, see
 
 ---
 
+### All
+
+- There are no manpages.
+
+### `git_lsx`
+
+- Leading and trailing spaces in filenames are stripped.
+
 ### `git_pull_all`
 
 - Only operates on the `origin` remote.
