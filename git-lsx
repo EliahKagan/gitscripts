@@ -15,7 +15,7 @@
 
 set -efo pipefail
 
-readonly miss='missing in "git s-files -s" output'
+readonly miss='missing in "git ls-files -s" output'
 
 if [ -t 1 ]; then
     readonly exec_color=$'\e[01;32m' conflict_color=$'' no_color=$'\e[0m'
