@@ -16,9 +16,25 @@ perform well-defined actions for git.
 When installed to a directory listed in `$PATH`, a script (or other executable)
 `git-X` defines a new git command `X`. Running `git X ...` calls `git-X ...`.
 
-<sup>Right now, I only have one such script, `git-pull-all`, in this repository. I'll
-likely add others later. But I don't plan to add `git-push-all`, because I
-suspect a substantial fraction of `git push-all` usages would be mistakes, and
-more importantly because I have rarely wanted to do that personally.</sup>
-
 See `BUGS.md` for information about known bugs.
+
+Here's a summary of the commands:
+
+### `git-lsx`
+
+This command lists files in the Git index, emphasizing those marked executable
+in a manner similar to the effect of `ls --color=auto -F`.
+
+This is mostly useful on Windows (with Git for Windows). On a Unix-like system,
+your repositories are presumably on a filesystem that supports Unix-style
+permissions, so you can usually just use `ls -l`. Occasionally you might still
+want to inspect the index rather than your working tree, though.
+
+### `git-pull-all`
+
+This command pulls all branches from the *origin* remote. Currenly it uses
+*origin* even if it's not the upstream remote.
+
+I don't plan to add `git-push-all`. I suspect a substantial fraction of
+`git push-all` usages would be mistakes. More important, I have rarely wanted
+to do that personally.
