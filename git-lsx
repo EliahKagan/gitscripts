@@ -31,7 +31,7 @@ fi
 declare -ri status_good=0 status_malformed_record=2
 declare -i status="$status_good"
 
-display() { # pass (mode string, stage number, pathname)
+display() { # pass (octal mode as text, stage number, pathname)
     local -ri bits="8#$1" num="$2"
     local -r path="$3"
 
