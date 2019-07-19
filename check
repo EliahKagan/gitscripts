@@ -13,7 +13,11 @@
 # with this software. If not, see
 # <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+status=0
+
 for f in check deploy git-*; do
     printf 'Checking %s.\n' "$f"
-    shellcheck "$f"
+    shellcheck "$f" || status="$?"
 done
+
+exit "$status"
