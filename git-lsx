@@ -14,11 +14,10 @@
 # <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 set -efo pipefail
+shopt -s lastpipe
 
 # See inode(7), "The file type and mode"
 declare -ri S_IFMT=8#170000 S_IFLNK=8#120000
-
-readonly missing='missing in "git ls-files -s" output'
 
 if [ -t 1 ]; then
     readonly symlink_color=$'\e[01;36m' # bright cyan
@@ -29,29 +28,42 @@ else
     readonly symlink_color='' exec_color='' merge_color='' no_color=''
 fi
 
-declare -i bits low_bits
+declare -ri status_good=0 status_malformed_record=2
+declare -i status="$status_good"
 
-git ls-files -sz -- "$@" | while read -rd '' mode hash num path; do
-    : "${mode:?$missing}"
-    : "${hash:?$missing}"
-    : "${num:?$missing}"
-    : "${path:?$missing}"
+display() { # pass (mode string, stage number, pathname)
+    local -ri bits="8#$1" num="$2"
+    local -r path="$3"
 
-    bits="8#$mode"
     if (((bits & S_IFMT) == S_IFLNK)); then # symbolic link
-        before="$symlink_color" after="${no_color}@"
+        local -r before="$symlink_color" after="${no_color}@"
     elif ((bits & 8#111)); then # at least one executable bit set
-        before="$exec_color" after="${no_color}*"
+        local -r before="$exec_color" after="${no_color}*"
     else
-        before='' after=''
+        local -r before='' after=''
     fi
 
-    if ((num > 0)); then # Make clear this is a candidate in a merge conflcit.
-        merge="  $merge_color(MERGING #$num)$no_color"
+    if ((num > 0)); then # candidate in merge conflict
+        local -r merge="  $merge_color(MERGING #$num)$no_color"
     else
-        merge=''
+        local -r merge=''
     fi
 
-    low_bits="$((bits % 8#10000))"
+    local -ri low_bits="$((bits % 8#10000))"
     printf '%04o  %s%s%s%s\n' "$low_bits" "$before" "$path" "$after" "$merge"
+}
+
+readonly -f display
+readonly record_pattern='^([0-7]+) [[:xdigit:]]+ ([[:digit:]]+)'$'\t''(.+)$'
+
+git ls-files -sz -- "$@" | while IFS= read -rd '' record; do
+    if [[ $record =~ $record_pattern ]]; then
+        # TODO: replace this repetition with a slice
+        display "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}"
+    else
+        ((status != status_good)) || status="$status_malformed_record"
+        printf '%s: malformed record "%s"\n' "$0" "$record" >&2
+    fi
 done
+
+exit "$status"
