@@ -18,6 +18,10 @@ this software. If not, see
 
 - There are no manpages.
 
+### `git_lsx`
+
+- Colors can't be customized without modifying the script.
+
 ### `git_pull_all`
 
 - Only operates on the `origin` remote.
