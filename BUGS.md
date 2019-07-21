@@ -16,7 +16,7 @@ this software. If not, see
 
 ### All
 
-- There are no manpages.
+- There are no man pages.
 
 ### `git_lsx`
 
