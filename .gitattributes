@@ -12,5 +12,12 @@
 # with this software. If not, see
 # <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+# Files without dots are shell scripts. They need LF line endings.
 * text=auto eol=lf
-*.md text=auto eol=auto
+
+# Files with dots are normal text files. They can use the system default.
+*.* text=auto eol=auto
+
+# The files containing copies of CC0 are normal text files too.
+COPYING text=auto eol=auto
+LICENSE text=auto eol=auto
