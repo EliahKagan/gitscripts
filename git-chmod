@@ -13,4 +13,5 @@
 # with this software. If not, see
 # <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+# shellcheck disable=SC2145  # I _want_ the weird POSIX first-argument join.
 exec git update-index --chmod="$@"
