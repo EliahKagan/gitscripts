@@ -31,18 +31,9 @@ git chmod +x foo
 git chmod -x bar baz quux
 ```
 
-`git-chmod` is a thin wrapper for `git update-index --chmod=`.
-
 This is mostly useful on Windows (with Git for Windows), together with
-`git-lsx` to inspect the permissions.
-
-As for how the `--chmod` option to `git update-index` works, see [this
-article](https://medium.com/@akash1233/change-file-permissions-when-working-with-git-repos-on-windows-ea22e34d5cee)
-by [Dharmendra Singh](https://medium.com/@akash1233).
-
-If `git` ever supports setting permissions on staged files other than with `+x`
-and `-x`, and uses the same syntax, then other such arguments to `git-chmod`
-will work, too.
+`git-lsx` to inspect the permissions (see below). `git-chmod` is a thin wrapper
+for `git update-index --chmod=`.
 
 ### `git-lsx`
 
