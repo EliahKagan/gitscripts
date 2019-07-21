@@ -23,7 +23,7 @@ Here's a summary of the commands:
 ### `git-chmod`
 
 This command changes executable permissions for files in the index. Use it like
-`chmod`, but specify onlt `+x` or `-x` as the mode. Pass one or more paths
+`chmod`, but specify only `+x` or `-x` as the mode. Pass one or more paths
 after the mode. For example:
 
 ```sh
@@ -57,7 +57,7 @@ want to inspect the index rather than your working tree, though.
 
 ### `git-pull-all`
 
-This command pulls all branches from the *origin* remote. Currenly it uses
+This command pulls all branches from the *origin* remote. Currently it uses
 *origin* even if it's not the upstream remote.
 
 I don't plan to add `git-push-all`. I suspect a substantial fraction of
