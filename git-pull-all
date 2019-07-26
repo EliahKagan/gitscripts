@@ -37,5 +37,5 @@ for b in $(git branch -a | filter_remote_branches); do
     { git checkout "$b" -- && git pull; } || err "can't update %s" "$b"
 done
 
-git checkout "$current" || err "can't return to %s" "$current"
+git checkout "$current" -- || err "can't return to %s" "$current"
 quit
