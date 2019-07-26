@@ -34,7 +34,7 @@ current="$(git symbolic-ref --short HEAD)" || die "can't find current branch"
 git fetch --all || die "can't fetch to get a complete list of branches"
 
 for b in $(git branch -a | filter_remote_branches); do
-    { git checkout "$b" && git pull; } || err "can't update %s" "$b"
+    { git checkout "$b" -- && git pull; } || err "can't update %s" "$b"
 done
 
 git checkout "$current" || err "can't return to %s" "$current"
