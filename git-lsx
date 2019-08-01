@@ -17,7 +17,7 @@ set -efo pipefail
 shopt -s lastpipe
 
 # See inode(7), "The file type and mode"
-declare -ri S_IFMT=8#170000 S_IFLNK=8#120000
+declare -ri S_IFMT=8#170000 S_IFLNK=8#120000 all_perms=8#7777 all_exec=8#111
 
 if [ -t 1 ]; then
     readonly symlink_color=$'\e[01;36m' # bright cyan
@@ -31,13 +31,13 @@ fi
 declare -ri status_good=0 status_malformed_record=2
 declare -i status="$status_good"
 
-display() { # call with (octal mode as text, stage number, pathname)
+display() { # call with (type/mode in octal, stage number, pathname)
     local -ri bits="8#$1" num="$2"
     local -r path="$3"
 
     if (((bits & S_IFMT) == S_IFLNK)); then # symbolic link
         local -r before="$symlink_color" after="${no_color}@"
-    elif ((bits & 8#111)); then # at least one executable bit set
+    elif ((bits & all_exec)); then # at least one executable bit set
         local -r before="$exec_color" after="${no_color}*"
     else
         local -r before='' after=''
@@ -49,7 +49,7 @@ display() { # call with (octal mode as text, stage number, pathname)
         local -r merge=''
     fi
 
-    local -ri low_bits="$((bits % 8#10000))"
+    local -ri low_bits="$((bits & all_perms))"
     printf '%04o  %s%s%s%s\n' "$low_bits" "$before" "$path" "$after" "$merge"
 }
 
