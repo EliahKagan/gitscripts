@@ -54,3 +54,8 @@ This command pulls all branches from the *origin* remote. Currently it uses
 I don't plan to add `git-push-all`. I suspect a substantial fraction of
 `git push-all` usages would be mistakes. More important, I have rarely wanted
 to do that personally.
+
+However, you may want to look at `git push --all`, which probably does what you
+want; unlike `pull`, where `--all` does not merge to all branches (rather, it
+fetches from all remotes before merging), with `push` the `--all` option *does*
+cause `git` to push all branches.
