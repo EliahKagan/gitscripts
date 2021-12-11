@@ -1,9 +1,12 @@
 #!/bin/sh
-# git-pull-all - Checks out and pulls from all branches of the origin remote.
+#
+# git-pull-all-branches
+# Checks out and pulls from all branches of the origin remote.
 #
 # This file is part of gitscripts, some custom git commands.
 #
 # Written in 2019 by Eliah Kagan <degeneracypressure@gmail.com>.
+# Minor update in 2021.
 #
 # To the extent possible under law, the author(s) have dedicated all copyright
 # and related and neighboring rights to this software to the public domain

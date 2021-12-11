@@ -1,6 +1,7 @@
 # Known Bugs
 
-*Written in 2019 by Eliah Kagan \<degeneracypressure@gmail.com\>.*
+*Written in 2019 by Eliah Kagan \<degeneracypressure@gmail.com\>. Minor update
+in 2021.*
 
 *This file is part of gitscripts, some custom git commands.*
 
@@ -22,6 +23,6 @@ this software. If not, see
 
 - Colors can't be customized without modifying the script.
 
-### `git-pull-all`
+### `git-pull-all-branches`
 
 - Only operates on the `origin` remote.
