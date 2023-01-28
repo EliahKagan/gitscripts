@@ -69,3 +69,8 @@ If you deploy these scripts and already had `git-pull-all`, it will not be
 deleted, so you may want to delete that. Note that this may not require more
 typing than before, if you have tab completion (type `git pull-` and press tab
 immediately after the hyphen).
+
+---
+
+Shell prompt customization is not in this repository. See
+[git_prompt_activate](https://github.com/EliahKagan/git_prompt_activate).
