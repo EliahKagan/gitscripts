@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+#
+# git-push-forward
+# Iteratively fast-forwards and pushes, one commit at a time, so CI runs on
+# each commit. (So you should probably not do it on hundreds of commits.)
+#
+# This file is part of gitscripts, some custom git commands.
+#
+# Written in 2023 by Eliah Kagan <degeneracypressure@gmail.com>.
+#
+# To the extent possible under law, the author(s) have dedicated all copyright
+# and related and neighboring rights to this software to the public domain
+# worldwide. This software is distributed without any warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication along
+# with this software. If not, see
+# <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+set -eu
+
+if ((BASH_VERSINFO[0] < 4)); then
+    printf '%s: error: needs Bash version 4 or higher\n' "$0" >&2
+    exit 2
+fi
+
+usage() {
+    printf 'Usage: %s [-r|--remote remote]... source_branch\n' "$0"
+}
+
+error() {
+    if (($#)); then
+        printf '%s: error: %s\n' "$0" "$1" >&2
+    fi
+    usage >&2
+}
+
+remotes=()
+source_branch=''
+
+while (($#)); do
+    case "$1" in
+    -r|--remote)
+        shift
+        remotes+=("$1")
+        ;;
+    -h|--help)
+        usage
+        exit 0
+        ;;
+    *)
+        if [ -z "$source_branch" ]; then
+            source_branch="$1"
+        else
+            error "invalid argument: $1"
+            exit 2
+        fi
+        ;;
+    esac
+    shift
+done
+
+if [ -z "$source_branch" ]; then
+    error 'no source branch specified'
+    exit 2
+fi
+
+if ! git symbolic-ref --quiet HEAD >/dev/null 2>&1; then
+    error 'not currently on any branch'
+    exit 1
+fi
+
+if ! git diff --quiet HEAD; then
+    error 'working tree not clean (commit or stash first)'
+    exit 1
+fi
+
+target_branch="$(git symbolic-ref --short HEAD)"
+latest_commit="$(git rev-parse "$target_branch")"
+common_ancestor="$(git merge-base "$target_branch" "$source_branch")"
+
+if [ "$latest_commit" != "$common_ancestor" ]; then
+    error "can't fast-forward: $target_branch is not in the history of $source_branch"
+    exit 1
+fi
+
+mapfile -t commits < <(git rev-list --reverse "$common_ancestor".."$source_branch")
+
+for commit in "${commits[@]}"; do
+    git merge --ff-only "$commit"
+    if ((${#remotes[@]} == 0)); then
+        git push
+    else
+        for remote in "${remotes[@]}"; do
+            git push "$remote"
+        done
+    fi
+done
