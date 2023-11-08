@@ -34,6 +34,11 @@ error() {
     usage >&2
 }
 
+push() {
+    sleep 10  # FIXME: Make this configurable.
+    git push "$@"
+}
+
 remotes=()
 source_branch=''
 
@@ -88,10 +93,10 @@ mapfile -t commits < <(git rev-list --reverse "$common_ancestor".."$source_branc
 for commit in "${commits[@]}"; do
     git merge --ff-only "$commit"
     if ((${#remotes[@]} == 0)); then
-        git push
+        push
     else
         for remote in "${remotes[@]}"; do
-            git push "$remote"
+            push "$remote"
         done
     fi
 done
