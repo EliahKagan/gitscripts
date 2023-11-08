@@ -1,0 +1,3 @@
+#!/bin/sh
+
+for d in *.git; do (set -e; printf '>>>>>> Entering %s.\n' "$d"; cd -- "$d"; git gc); done
