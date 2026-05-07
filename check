@@ -16,6 +16,11 @@
 status=0
 
 for f in check deploy git-*; do
+    # git-swim-forward is a fish script and shellcheck doesn't support fish.
+    if [ "$f" = git-swim-forward ]; then
+        printf 'Skipping %s (fish script).\n' "$f"
+        continue
+    fi
     printf 'Checking %s.\n' "$f"
     shellcheck "$f" || status="$?"
 done

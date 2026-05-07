@@ -1,0 +1,96 @@
+#!/usr/bin/env fish
+#
+# git-swim-forward
+# Iteratively fast-forwards and pushes, one commit at a time, so CI runs on
+# each commit. (So you should probably not do it on hundreds of commits.)
+#
+# fish-shell translation of git-push-forward.
+#
+# This file is part of gitscripts, some custom git commands.
+#
+# Translated from the git-push-forward Bash script in 2026.
+#
+# To the extent possible under law, the author(s) have dedicated all copyright
+# and related and neighboring rights to this software to the public domain
+# worldwide. This software is distributed without any warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication along
+# with this software. If not, see
+# <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+function usage
+    printf 'Usage: %s [-r|--remote remote]... source_branch\n' (status filename)
+end
+
+function error
+    if test (count $argv) -gt 0
+        printf '%s: error: %s\n' (status filename) $argv[1] >&2
+    end
+    usage >&2
+end
+
+function push
+    sleep 10  # FIXME: Make this configurable.
+    git push $argv
+end
+
+argparse --name=(status filename) 'r/remote=+' 'h/help' -- $argv
+or exit 2
+
+if set -q _flag_help
+    usage
+    exit 0
+end
+
+switch (count $argv)
+    case 0
+        error 'no source branch specified'
+        exit 2
+    case 1
+        # ok
+    case '*'
+        error "invalid argument: $argv[2]"
+        exit 2
+end
+
+set -l source_branch $argv[1]
+set -l remotes $_flag_remote
+
+if not git symbolic-ref --quiet HEAD >/dev/null 2>&1
+    error 'not currently on any branch'
+    exit 1
+end
+
+if not git diff --quiet HEAD
+    error 'working tree not clean (commit or stash first)'
+    exit 1
+end
+
+set -l target_branch (git symbolic-ref --short HEAD)
+or exit
+set -l latest_commit (git rev-parse $target_branch)
+or exit
+set -l common_ancestor (git merge-base $target_branch $source_branch)
+or exit
+
+if test "$latest_commit" != "$common_ancestor"
+    error "can't fast-forward: $target_branch is not in the history of $source_branch"
+    exit 1
+end
+
+set -l commits (git rev-list --reverse $common_ancestor..$source_branch)
+or exit
+
+for commit in $commits
+    git merge --ff-only $commit
+    or exit
+    if test (count $remotes) -eq 0
+        push
+        or exit
+    else
+        for remote in $remotes
+            push $remote
+            or exit
+        end
+    end
+end
